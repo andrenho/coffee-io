@@ -1,13 +1,14 @@
 resource "google_container_cluster" "primary" {
   name       = "coffee-io"
   depends_on = [google_project_service.project]
+  min_master_version = "1.14.8-gke.17"
   #location = "southamerica-east-1"
 
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
   # node pool and immediately delete it.
   remove_default_node_pool = true
-  initial_node_count       = 1
+  initial_node_count       = 2
 
   master_auth {
     username = ""
