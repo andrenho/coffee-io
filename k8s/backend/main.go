@@ -2,12 +2,21 @@ package main
 
 import (
 	"encoding/json"
+  "fmt"
   "log"
   "net/http"
 )
 
 func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+}
+
+// 
+// health
+//
+
+func health(w http.ResponseWriter, r *http.Request) {
+  fmt.Fprintln(w, "ok");
 }
 
 // 
@@ -71,6 +80,7 @@ func recipeHandler(w http.ResponseWriter, r *http.Request) {
 //
 
 func main() {
+  http.HandleFunc("/healthz", health)
   http.HandleFunc("/recipes/global/", recipeHandler)
   log.Fatal(http.ListenAndServe(":8888", nil))
 }
