@@ -1,0 +1,5 @@
+frontend/.env:REACT_APP_BACKEND_URL=http://localhost
+frontend/src/admin/Admin.js:        axios.get(process.env.REACT_APP_BACKEND_URL + '/orders')
+frontend/src/state/actions.js:        return axios.get(process.env.REACT_APP_BACKEND_URL + '/recipes/global/')
+frontend/src/state/actions.js:        return axios.get(process.env.REACT_APP_BACKEND_URL + '/ingredients/')
+frontend/src/state/actions.js:        return axios.post(process.env.REACT_APP_BACKEND_URL + "/cart", cart)
