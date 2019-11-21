@@ -4,3 +4,10 @@ provider "google" {
   region      = "southamerica-east1"
   zone        = "southamerica-east1-b"
 }
+
+provider "google-beta" {
+  credentials = "${file("credentials.json")}"
+  project     = "coffee-io-k8s"
+  region      = "southamerica-east1"
+  zone        = "southamerica-east1-b"
+}

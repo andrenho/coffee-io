@@ -19,12 +19,14 @@ spec:
       containers:
         - name: backend
           image: andrenho/coffee-io-k8s-backend:$VERSION
+          env:
+            - name: SECRET_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: db-pass
           ports:
             - containerPort: 8888
-          resources:
-            limits:
-              memory: "32Mi"
-              cpu: "100m"
           livenessProbe:
             httpGet:
               path: /healthz

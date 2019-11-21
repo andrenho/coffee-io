@@ -1,6 +1,6 @@
-- autoscaling nodes
 - kuberenetes secrets
 - get ingredientes from database
+- autoscaling nodes
 - publish & test changes
 - orders/cart from database
 - publish & test changes

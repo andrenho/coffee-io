@@ -21,10 +21,6 @@ spec:
           image: andrenho/coffee-io-k8s-frontend:$VERSION
           ports:
             - containerPort: 80
-          resources:
-            limits:
-              memory: "32Mi"
-              cpu: "100m"
           livenessProbe:
             httpGet:
               path: /

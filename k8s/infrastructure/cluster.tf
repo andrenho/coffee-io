@@ -1,14 +1,12 @@
 resource "google_container_cluster" "primary" {
+  provider   = "google-beta"
+
   name       = "coffee-io"
   depends_on = [google_project_service.project]
   min_master_version = "1.14.8-gke.17"
   #location = "southamerica-east-1"
 
-  # We can't create a cluster with no node pool defined, but we want to only use
-  # separately managed node pools. So we create the smallest possible default
-  # node pool and immediately delete it.
-  remove_default_node_pool = true
-  initial_node_count       = 2
+  initial_node_count       = 1
 
   master_auth {
     username = ""
@@ -18,26 +16,31 @@ resource "google_container_cluster" "primary" {
       issue_client_certificate = false
     }
   }
-}
 
-resource "google_container_node_pool" "primary_preemptible_nodes" {
-  name       = "my-node-pool"
-  #location   = "southamerica-east-1"
-  cluster    = google_container_cluster.primary.name
-  node_count = 1
+  cluster_autoscaling {
+    enabled = true
+    resource_limits {
+      resource_type = "cpu"
+      minimum       = 1
+      maximum       = 4
+    }
+    resource_limits {
+      resource_type = "memory"
+      minimum       = 1
+      maximum       = 12
+    }
+  }
 
   node_config {
-    preemptible  = true
-    machine_type = "n1-standard-1"
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring",
+    ]
 
     metadata = {
       disable-legacy-endpoints = "true"
     }
 
-    oauth_scopes = [
-      "https://www.googleapis.com/auth/logging.write",
-      "https://www.googleapis.com/auth/monitoring",
-    ]
   }
 }
 
