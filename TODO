@@ -1,3 +1,4 @@
+- autoscaling nodes
 - kuberenetes secrets
 - get ingredientes from database
 - publish & test changes
