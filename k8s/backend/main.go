@@ -5,6 +5,8 @@ import (
   "fmt"
   "log"
   "net/http"
+  "database/sql"
+  _ "github.com/go-sql-driver/mysql"
 )
 
 func enableCors(w *http.ResponseWriter) {
@@ -34,6 +36,12 @@ type Ingredient struct {
 }
 
 func ingredientHandler(w http.ResponseWriter, r *http.Request) {
+  db, err := sql.Open("mysql", "username:password@tcp(127.0.0.1:3306)/test")
+  if err != nil {
+    panic(err.Error())
+  }
+  defer db.Close()
+
   ingredients := []Ingredient {
       { "Espresso",        0.0, "Coffee", "#000000", 4.0, 0, false },
       { "Brewed (strong)", 0.0, "Coffee", "#610B0B", 3.0, 0, false },
