@@ -39,34 +39,27 @@ type Ingredient struct {
 func ingredientHandler(w http.ResponseWriter, r *http.Request) {
   db, err := sql.Open("mysql", "coffee:" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ":3306)/db")
   if err != nil {
-    panic(err.Error())
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+    return
   }
   defer db.Close()
 
-  results, err := db.Query("select * from ingredients")
+  results, err := db.Query("select name, percentage, type, color, cost, qtd, lightcolor from ingredients")
   if err != nil {
-    panic(err.Error())
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+    return
   }
 
-  var name string
+  var ingredients []Ingredient
   for results.Next() {
-    err = results.Scan(&name)
+    var ing Ingredient
+    var tp string
+    err = results.Scan(&ing.Name, &ing.Percentage, &tp, &ing.Color, &ing.Cost, &ing.Qtd, &ing.LightColor)
     if err != nil {
-      panic(err.Error())
+      http.Error(w, err.Error(), http.StatusInternalServerError)
+      return
     }
-    fmt.Println(name)
-  }
-
-  ingredients := []Ingredient {
-      { "Espresso",        0.0, "Coffee", "#000000", 4.0, 0, false },
-      { "Brewed (strong)", 0.0, "Coffee", "#610B0B", 3.0, 0, false },
-      { "Brewed (weak)",   0.0, "Coffee", "#8A4B08", 3.0, 0, false },
-      { "Cream",           0.0, "Dairy",  "#F5F6CE", 4.0, 0, true },
-      { "Milk",            0.0, "Dairy",  "#FAFAFA", 2.0, 0, true },
-      { "Whipped milk",    0.0, "Dairy",  "#F2F2F2", 3.5, 0, true },
-      { "Water",           0.0, "Liquids","#20A0FF", 0.0, 0, true },
-      { "Chocolate",       0.0, "Liquids","#8A4B08", 5.0, 0, false },
-      { "Whisky",          0.0, "Liquids","#FFBF00", 12.0, 0, true },
+    ingredients = append(ingredients, ing)
   }
 
   js, err := json.Marshal(ingredients)

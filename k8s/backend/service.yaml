@@ -20,11 +20,13 @@ spec:
         - name: backend
           image: andrenho/coffee-io-k8s-backend:$VERSION
           env:
-            - name: SECRET_DB_PASS
+            - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: secrets
                   key: db-pass
+            - name: DB_HOST
+              value: database
           ports:
             - containerPort: 8888
           livenessProbe:
