@@ -1,8 +1,8 @@
 - autoscaling nodes (ok)
 - kuberenetes secrets (ok)
-- get ingredientes from database
-- publish & test changes
-- use independent volume for database
+- get ingredientes from database (ok)
+- publish & test changes (ok)
+- use independent volume for database (ok)
 - orders/cart from database
 - publish & test changes
 - process to clean up database
