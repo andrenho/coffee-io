@@ -1,0 +1,32 @@
+{
+  "items": [
+    {
+      "recipeName": "Espresso",
+      "description": "A creamy, strong coffee prepared under ideal conditions.",
+      "size": "small",
+      "ingredients": [
+        {
+          "name": "Espresso",
+          "percentage": 1,
+          "type": "coffee",
+          "color": "#000000",
+          "cost": 4,
+          "qtd": 4,
+          "lightColor": false
+        }
+      ],
+      "totalCost": 4
+    }
+  ],
+  "deliveryCost": 0,
+  "taxCost": 0,
+  "total": 4,
+  "deliveryAddress": {
+    "name": "a",
+    "email": "a",
+    "address": "a",
+    "city": "a",
+    "state": "a",
+    "zip": "a"
+  }
+}

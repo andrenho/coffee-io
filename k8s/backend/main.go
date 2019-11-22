@@ -14,16 +14,8 @@ func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 }
 
-// 
-// health
 //
-
-func health(w http.ResponseWriter, r *http.Request) {
-  fmt.Fprintln(w, "ok");
-}
-
-// 
-// ingredients
+// types
 //
 
 type Ingredient struct {
@@ -36,8 +28,100 @@ type Ingredient struct {
   LightColor bool     `json:"lightColor"`
 }
 
+type Recipe struct {
+  RecipeName   string        `json:"recipeName"`
+  Description  string        `json:"description"`
+  Size         string        `json:"size"`
+  Ingredients  []Ingredient  `json:"ingredients"`
+  TotalCost    float64       `json:"totalCost"`
+}
+
+type DeliveryAddress struct {
+  Name          string      `json:"name"`
+  Email         string      `json:"email"`
+  Address       string      `json:"address"`
+  City          string      `json:"city"`
+  State         string      `json:"state"`
+  Zip           string      `json:"zip"`
+}
+
+type OrderItem struct {
+  Name          string       `json:"name"`
+  Description   string       `json:"description"`
+  Size          string       `json:"size"`
+  TotalCost     float64      `json:"totalCost"`
+  Ingredients   []Ingredient `json:"ingredients"`
+}
+
+type Order struct {
+  DeliveryAddress DeliveryAddress `json:"deliveryAddress"`
+  DeliveryCost    float64         `json:"deliveryCost"`
+  TaxCost         float64         `json:"taxCost"`
+  Total           float64         `json:"total"`
+  Items           []OrderItem     `json:"items"`
+}
+
+// 
+// health
+//
+
+func health(w http.ResponseWriter, r *http.Request) {
+  fmt.Fprintln(w, "ok");
+}
+
+func openDatabase() (*sql.DB, error) {
+  return sql.Open("mysql", "coffee:" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ":3306)/db")
+}
+
+// 
+// recipes
+//
+
+func recipeHandler(w http.ResponseWriter, r *http.Request) {
+  if r.Method != http.MethodGet {
+    http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+  }
+
+  recipes := []Recipe {
+    {
+      "Espresso",
+      "A creamy, strong coffee prepared under ideal conditions.",
+      "small",
+      []Ingredient { { "Espresso", 1.0, "coffee", "#000000", 4.0, 4, false } },
+      4.0,
+    }, {
+      "Café con leche",
+      "The perfect way to start your morning.",
+      "medium",
+      []Ingredient {
+        { "Brewed (strong)", 0.5, "coffee", "#610B0B", 3.0, 2, false },
+        { "Mild", 0.5, "liquid", "#FAFAFA", 2.0, 2, false },
+      },
+      5.0,
+    },
+  }
+
+  js, err := json.Marshal(recipes)
+  if err != nil {
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+    return
+  }
+
+  enableCors(&w)
+  w.Header().Set("Content-Type", "application/json")
+  w.Write(js)
+}
+
+// 
+// ingredients
+//
+
 func ingredientHandler(w http.ResponseWriter, r *http.Request) {
-  db, err := sql.Open("mysql", "coffee:" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ":3306)/db")
+  if r.Method != http.MethodGet {
+    http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+  }
+
+  db, err := openDatabase()
   if err != nil {
     http.Error(w, err.Error(), http.StatusInternalServerError)
     return
@@ -76,52 +160,40 @@ func ingredientHandler(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  enableCors(&w);
+  enableCors(&w)
   w.Header().Set("Content-Type", "application/json")
   w.Write(js)
 }
 
 // 
-// recipes
+// orders
 //
 
-func recipeHandler(w http.ResponseWriter, r *http.Request) {
-  type Recipe struct {
-    RecipeName   string        `json:"recipeName"`
-    Description  string        `json:"description"`
-    Size         string        `json:"size"`
-    Ingredients  []Ingredient  `json:"ingredients"`
-    TotalCost    float64       `json:"totalCost"`
+func orderHandler(w http.ResponseWriter, r *http.Request) {
+  if r.Method != http.MethodPost {
+    http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
   }
 
-  recipes := []Recipe {
-    {
-      "Espresso",
-      "A creamy, strong coffee prepared under ideal conditions.",
-      "small",
-      []Ingredient { { "Espresso", 1.0, "coffee", "#000000", 4.0, 4, false } },
-      4.0,
-    }, {
-      "Café con leche",
-      "The perfect way to start your morning.",
-      "medium",
-      []Ingredient {
-        { "Brewed (strong)", 0.5, "coffee", "#610B0B", 3.0, 2, false },
-        { "Mild", 0.5, "liquid", "#FAFAFA", 2.0, 2, false },
-      },
-      5.0,
-    },
-  }
-
-  js, err := json.Marshal(recipes)
+  decoder := json.NewDecoder(r.Body)
+  var order Order
+  err:= decoder.Decode(&order)
   if err != nil {
+    panic(err)
     http.Error(w, err.Error(), http.StatusInternalServerError)
     return
   }
 
-  enableCors(&w);
-  w.Header().Set("Content-Type", "application/json")
-  w.Write(js)
+  // TODO - insert in database
+  log.Println(order)
+
+  db, err := openDatabase()
+  if err != nil {
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+    return
+  }
+  defer db.Close()
+
+  enableCors(&w)
 }
 
 // 
@@ -132,5 +204,6 @@ func main() {
   http.HandleFunc("/healthz", health)
   http.HandleFunc("/ingredients/", ingredientHandler)
   http.HandleFunc("/recipes/global/", recipeHandler)
+  http.HandleFunc("/cart/", orderHandler)
   log.Fatal(http.ListenAndServe(":8888", nil))
 }
