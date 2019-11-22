@@ -4,6 +4,7 @@ import (
 	"encoding/json"
   "fmt"
   "log"
+  "os"
   "net/http"
   "database/sql"
   _ "github.com/go-sql-driver/mysql"
@@ -36,11 +37,25 @@ type Ingredient struct {
 }
 
 func ingredientHandler(w http.ResponseWriter, r *http.Request) {
-  db, err := sql.Open("mysql", "username:password@tcp(127.0.0.1:3306)/test")
+  db, err := sql.Open("mysql", "coffee:" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ":3306)/db")
   if err != nil {
     panic(err.Error())
   }
   defer db.Close()
+
+  results, err := db.Query("select * from ingredients")
+  if err != nil {
+    panic(err.Error())
+  }
+
+  var name string
+  for results.Next() {
+    err = results.Scan(&name)
+    if err != nil {
+      panic(err.Error())
+    }
+    fmt.Println(name)
+  }
 
   ingredients := []Ingredient {
       { "Espresso",        0.0, "Coffee", "#000000", 4.0, 0, false },

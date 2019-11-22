@@ -1,4 +1,4 @@
-FROM mysql
+FROM mysql:5.7.28
 
 # ENV MYSQL_ROOT_PASSWORD expired
 ENV MYSQL_DATABASE db
