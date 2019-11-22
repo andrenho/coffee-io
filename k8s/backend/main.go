@@ -59,6 +59,14 @@ func ingredientHandler(w http.ResponseWriter, r *http.Request) {
       http.Error(w, err.Error(), http.StatusInternalServerError)
       return
     }
+    switch s := tp; s {
+    case "L":
+      ing.Type = "Liquids"
+    case "C":
+      ing.Type = "Coffee"
+    case "D":
+      ing.Type = "Dairy"
+    }
     ingredients = append(ingredients, ing)
   }
 

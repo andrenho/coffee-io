@@ -8,3 +8,4 @@
 - process to clean up database
 - change architecture
 - TLS termination (?)
+- CI
