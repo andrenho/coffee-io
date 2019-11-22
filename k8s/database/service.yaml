@@ -28,6 +28,14 @@ spec:
                   key: db-pass
           ports:
             - containerPort: 3306
+          volumeMounts:
+          - mountPath: /var/lib/mysql
+            name: db-storage
+      volumes:
+      - name: db-storage
+        persistentVolumeClaim:
+          claimName: db-storage
+          readOnly: false
 ---
 apiVersion: v1
 kind: Service
@@ -40,3 +48,28 @@ spec:
     - protocol: TCP
       port: 3306
       targetPort: 3306
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: db-storage
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  gcePersistentDisk:
+    pdName: db-storage
+    fsType: ext4
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: db-storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
