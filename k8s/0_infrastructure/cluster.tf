@@ -1,10 +1,10 @@
 resource "google_container_cluster" "primary" {
   provider   = "google-beta"
+  remove_default_node_pool = true
 
   name       = "coffee-io"
   depends_on = [google_project_service.project]
   min_master_version = "1.14.8-gke.17"
-  #location = "southamerica-east-1"
 
   initial_node_count       = 1
 
@@ -19,6 +19,7 @@ resource "google_container_cluster" "primary" {
 
   cluster_autoscaling {
     enabled = true
+    /*
     resource_limits {
       resource_type = "cpu"
       minimum       = 1
@@ -29,6 +30,7 @@ resource "google_container_cluster" "primary" {
       minimum       = 1
       maximum       = 12
     }
+    */
   }
 
   node_config {
@@ -43,11 +45,6 @@ resource "google_container_cluster" "primary" {
 
   }
 }
-
-#resource "google_compute_disk" "default" {
-#  name = "pv-disk"
-#  size = 1
-#}
 
 output "k8s_connect" {
 	value = "gcloud container clusters get-credentials ${google_container_cluster.primary.name} --zone ${google_container_cluster.primary.location} --project ${google_container_cluster.primary.project}"

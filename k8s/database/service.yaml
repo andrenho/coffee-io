@@ -31,6 +31,10 @@ spec:
                   key: db-pass
           ports:
             - containerPort: 3306
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
           volumeMounts:
           - mountPath: /var/lib/mysql
             name: db-storage
