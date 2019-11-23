@@ -6,6 +6,7 @@ import (
   "log"
   "os"
   "net/http"
+  "time"
   "database/sql"
   _ "github.com/go-sql-driver/mysql"
 )
@@ -60,6 +61,7 @@ type Order struct {
   DeliveryCost    float64         `json:"deliveryCost"`
   TaxCost         float64         `json:"taxCost"`
   Total           float64         `json:"total"`
+  Date            time.Time       `json:"orderDate"`
   Items           []OrderItem     `json:"items"`
 }
 
@@ -72,7 +74,7 @@ func health(w http.ResponseWriter, r *http.Request) {
 }
 
 func openDatabase() (*sql.DB, error) {
-  return sql.Open("mysql", "coffee:" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ":3306)/db")
+  return sql.Open("mysql", "coffee:" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ":3306)/db?parseTime=true")
 }
 
 // 
@@ -271,6 +273,122 @@ func orderHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // 
+// orders
+//
+
+func ordersHandler(w http.ResponseWriter, r *http.Request) {
+  if r.Method != http.MethodGet {
+    http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+  }
+
+  db, err := openDatabase()
+  if err != nil {
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+    return
+  }
+  defer db.Close()
+
+  // orders
+  results, err := db.Query(`SELECT id, name, email, address, city, state, zip, delivery_cost, tax_cost, total, order_date
+                              FROM orders`)
+  if err != nil {
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+    return
+  }
+
+  order_ids := make(map[int]int)
+
+  var orders []Order
+  i := 0
+  for results.Next() {
+    var o Order
+    var id int
+    err = results.Scan(&id, &o.DeliveryAddress.Name, &o.DeliveryAddress.Email, &o.DeliveryAddress.Address,
+                       &o.DeliveryAddress.City, &o.DeliveryAddress.State, &o.DeliveryAddress.Zip,
+                       &o.DeliveryCost, &o.TaxCost, &o.Total, &o.Date)
+    if err != nil {
+      http.Error(w, err.Error(), http.StatusInternalServerError)
+      return
+    }
+
+    orders = append(orders, o)
+    order_ids[id] = i
+    i += 1
+  }
+
+  // items
+  results, err = db.Query(`SELECT order_id, num, name, description, size, total_cost
+                            FROM order_items ORDER BY order_id, num`)
+  if err != nil {
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+    return
+  }
+
+  for results.Next() {
+    var i OrderItem
+    var id int
+    var num int
+    var size string
+    err = results.Scan(&id, &num, &i.Name, &i.Description, &i.Size, &i.TotalCost)
+    if err != nil {
+      http.Error(w, err.Error(), http.StatusInternalServerError)
+      return
+    }
+    switch size {
+      case "S": i.Size = "small"
+      case "M": i.Size = "medium"
+      case "L": i.Size = "large"
+    }
+    order_id := order_ids[id]
+    orders[order_id].Items = append(orders[order_id].Items, i)
+  }
+
+  // ingredients
+  results, err = db.Query(`SELECT order_id, item_num, name, percentage, type, color, cost, qtd, lightcolor
+                             FROM item_ingredients
+                       INNER JOIN ingredients ON (item_ingredients.ingredient_id = ingredients.id)
+                         ORDER BY order_id, item_num`)
+  if err != nil {
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+    return
+  }
+
+  for results.Next() {
+    var ord_id int
+    var item_num int
+    var tp string
+    var ing Ingredient
+    err = results.Scan(&ord_id, &item_num,
+                       &ing.Name, &ing.Percentage, &tp, &ing.Color, &ing.Cost, &ing.Qtd, &ing.LightColor)
+    if err != nil {
+      http.Error(w, err.Error(), http.StatusInternalServerError)
+      return
+    }
+    switch s := tp; s {
+    case "L":
+      ing.Type = "Liquids"
+    case "C":
+      ing.Type = "Coffee"
+    case "D":
+      ing.Type = "Dairy"
+    }
+    order_id := order_ids[ord_id]
+    orders[order_id].Items[item_num-1].Ingredients = append(orders[order_id].Items[item_num-1].Ingredients, ing)
+  }
+
+  // json
+  js, err := json.Marshal(orders)
+  if err != nil {
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+    return
+  }
+
+  enableCors(&w)
+  w.Header().Set("Content-Type", "application/json")
+  w.Write(js)
+}
+
+// 
 // main
 //
 
@@ -279,5 +397,6 @@ func main() {
   http.HandleFunc("/ingredients/", ingredientHandler)
   http.HandleFunc("/recipes/global/", recipeHandler)
   http.HandleFunc("/cart", orderHandler)
+  http.HandleFunc("/orders", ordersHandler)
   log.Fatal(http.ListenAndServe(":8888", nil))
 }

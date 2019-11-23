@@ -21,6 +21,7 @@ create table orders (
   delivery_cost decimal(10, 2) not null,
   tax_cost      decimal(10, 2) not null,
   total         decimal(10, 2) not null,
+  order_date    timestamp default now()
   primary key (id)
 );
 
