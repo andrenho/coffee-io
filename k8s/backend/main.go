@@ -216,13 +216,13 @@ func insertOrderInDatabase(db *sql.DB, order Order) error {
     }
 
     // ingredients
-    stmt_i, err := tx.Prepare(`INSERT INTO item_ingredients (order_id, item_num, ingredient_id)
-                                    VALUES (?, ?, (SELECT id FROM ingredients WHERE name = ?))`)
+    stmt_i, err := tx.Prepare(`INSERT INTO item_ingredients (order_id, item_num, ingredient_id, qtd)
+                                    VALUES (?, ?, (SELECT id FROM ingredients WHERE name = ?), ?)`)
     if err != nil {
       return err
     }
     for _, ing := range item.Ingredients {
-      _, err = stmt_i.Exec(id, i+1, ing.Name)
+      _, err = stmt_i.Exec(id, i+1, ing.Name, ing.Qtd)
       if err != nil {
         return err
       }
@@ -344,7 +344,7 @@ func ordersHandler(w http.ResponseWriter, r *http.Request) {
   }
 
   // ingredients
-  results, err = db.Query(`SELECT order_id, item_num, name, percentage, type, color, cost, qtd, lightcolor
+  results, err = db.Query(`SELECT order_id, item_num, name, percentage, type, color, cost, item_ingredients.qtd, lightcolor
                              FROM item_ingredients
                        INNER JOIN ingredients ON (item_ingredients.ingredient_id = ingredients.id)
                          ORDER BY order_id, item_num`)

@@ -40,6 +40,7 @@ create table item_ingredients (
   order_id      int not null,
   item_num      smallint not null,
   ingredient_id mediumint not null,
+  qtd           int not null default 0
   primary key (order_id, item_num, ingredient_id),
   foreign key (order_id, item_num) references order_items (order_id, num),
   foreign key (ingredient_id) references ingredients (id)

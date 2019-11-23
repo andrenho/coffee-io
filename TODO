@@ -6,8 +6,8 @@
 - orders/cart from database (ok)
 - publish & test changes (ok)
 - bugs
-  - date issued
-  - no ingredients on view
+  - date issued (ok)
+  - no ingredients on view (ok)
 - process to clean up database
 - change architecture
 - TLS termination (?)
