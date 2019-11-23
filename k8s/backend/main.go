@@ -298,7 +298,8 @@ func ordersHandler(w http.ResponseWriter, r *http.Request) {
 
   order_ids := make(map[int]int)
 
-  var orders []Order
+  //var orders []Order
+  orders := make([]Order, 0)
   i := 0
   for results.Next() {
     var o Order
