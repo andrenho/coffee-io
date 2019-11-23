@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-maintenance
+spec:
+  selector:
+    matchLabels:
+      app: db-maintenance
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: db-maintenance
+    spec:
+      containers:
+        - name: db-maintenance
+          image: alpine
+          command: ["/bin/sh"]
+          args: ["-c", "while true; do echo hello; sleep 10;done"]
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+          - mountPath: /var/lib/mysql
+            name: db-storage
+      volumes:
+      - name: db-storage
+        persistentVolumeClaim:
+          claimName: db-storage
+          readOnly: false
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: db-storage
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  gcePersistentDisk:
+    pdName: db-storage
+    fsType: ext4
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: db-storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

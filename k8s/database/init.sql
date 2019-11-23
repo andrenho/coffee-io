@@ -21,7 +21,7 @@ create table orders (
   delivery_cost decimal(10, 2) not null,
   tax_cost      decimal(10, 2) not null,
   total         decimal(10, 2) not null,
-  order_date    timestamp default now()
+  order_date    timestamp default now(),
   primary key (id)
 );
 
@@ -40,7 +40,7 @@ create table item_ingredients (
   order_id      int not null,
   item_num      smallint not null,
   ingredient_id mediumint not null,
-  qtd           int not null default 0
+  qtd           int not null default 0,
   primary key (order_id, item_num, ingredient_id),
   foreign key (order_id, item_num) references order_items (order_id, num),
   foreign key (ingredient_id) references ingredients (id)
