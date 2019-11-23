@@ -328,13 +328,12 @@ func ordersHandler(w http.ResponseWriter, r *http.Request) {
     var i OrderItem
     var id int
     var num int
-    var size string
     err = results.Scan(&id, &num, &i.Name, &i.Description, &i.Size, &i.TotalCost)
     if err != nil {
       http.Error(w, err.Error(), http.StatusInternalServerError)
       return
     }
-    switch size {
+    switch i.Size {
       case "S": i.Size = "small"
       case "M": i.Size = "medium"
       case "L": i.Size = "large"

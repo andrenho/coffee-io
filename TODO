@@ -10,5 +10,6 @@
   - no ingredients on view (ok)
 - process to clean up database
 - change architecture
+- make all pages redirect to "/"
 - TLS termination (?)
 - CI
