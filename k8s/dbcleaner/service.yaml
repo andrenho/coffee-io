@@ -1,0 +1,26 @@
+#
+# POD
+#
+
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: dbcleaner
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: dbcleaner
+              image: andrenho/coffee-io-k8s-dbcleaner:$VERSION
+              env:
+                - name: DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: secrets
+                      key: db-pass
+                - name: DB_HOST
+                  value: database
+          restartPolicy: Never
