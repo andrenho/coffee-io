@@ -1,32 +1,75 @@
 {
   "items": [
     {
-      "recipeName": "Espresso",
-      "description": "A creamy, strong coffee prepared under ideal conditions.",
-      "size": "small",
+      "recipeName": "Café con leche",
+      "description": "The perfect way to start your morning.",
+      "size": "medium",
       "ingredients": [
         {
-          "name": "Espresso",
-          "percentage": 1,
+          "name": "Brewed (strong)",
+          "percentage": 0.5,
           "type": "coffee",
-          "color": "#000000",
-          "cost": 4,
-          "qtd": 4,
+          "color": "#610B0B",
+          "cost": 3,
+          "qtd": 2,
+          "lightColor": false
+        },
+        {
+          "name": "Milk",
+          "percentage": 0.5,
+          "type": "liquid",
+          "color": "#FAFAFA",
+          "cost": 2,
+          "qtd": 2,
           "lightColor": false
         }
       ],
-      "totalCost": 4
+      "totalCost": 5
+    },
+    {
+      "size": "medium",
+      "description": "Brewed (strong), Milk, Whisky",
+      "ingredients": [
+        {
+          "name": "Brewed (strong)",
+          "percentage": 0,
+          "type": "Coffee",
+          "color": "#610B0B",
+          "cost": 3,
+          "qtd": 2,
+          "lightColor": false
+        },
+        {
+          "name": "Milk",
+          "percentage": 0,
+          "type": "Dairy",
+          "color": "#FAFAFA",
+          "cost": 2,
+          "qtd": 1,
+          "lightColor": true
+        },
+        {
+          "name": "Whisky",
+          "percentage": 0,
+          "type": "Liquids",
+          "color": "#FFBF00",
+          "cost": 12,
+          "qtd": 1,
+          "lightColor": true
+        }
+      ],
+      "totalCost": 5
     }
   ],
   "deliveryCost": 0,
   "taxCost": 0,
-  "total": 4,
+  "total": 10,
   "deliveryAddress": {
-    "name": "a",
-    "email": "a",
-    "address": "a",
-    "city": "a",
-    "state": "a",
-    "zip": "a"
+    "name": "André Wagner",
+    "email": "andre.nho@gmail.com",
+    "address": "8800 Northpark Dr, TownePlace Suites by Marriott",
+    "city": "Johnston",
+    "state": "IA",
+    "zip": "50131"
   }
 }

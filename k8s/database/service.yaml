@@ -15,6 +15,9 @@ spec:
       containers:
         - name: database
           image: andrenho/coffee-io-k8s-database:$VERSION
+          #image: alpine #andrenho/coffee-io-k8s-database:$VERSION
+          #command: ["/bin/sh"]
+          #args: ["-c", "while true; do echo hello; sleep 10;done"]
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:

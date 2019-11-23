@@ -1,0 +1,11 @@
+cart:
+  deliveryAddress
+    name, email, address, city, state, zip
+  deliveryCost
+  taxCost
+  total
+  items
+    [] description, recipeName, size, totalCost
+       ingredients:
+           [] name, percentage, type, color...
+

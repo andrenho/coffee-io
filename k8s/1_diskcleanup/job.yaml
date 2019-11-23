@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: disk-cleanup
+spec:
+  template:
+    spec:
+      containers:
+      - name: disk-cleanup
+        image: alpine
+        command: ["rm", "-rf", "/var/lib/mysql"]
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: db-storage
+      restartPolicy: Never
+      volumes:
+      - name: db-storage
+        persistentVolumeClaim:
+          claimName: db-storage
+          readOnly: false
+  backoffLimit: 4
