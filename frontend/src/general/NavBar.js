@@ -26,6 +26,9 @@ export default class NavBar extends Component {
                         <NavLink className="nav-item nav-link" activeClassName="active" to="/architecture">Application architecture</NavLink>
                     </div>
                 </div>
+                <div className="justify-content-end">
+                    <span className="navbar-text">Backend architecture:</span>
+                </div>
             </nav>
         );
     }
