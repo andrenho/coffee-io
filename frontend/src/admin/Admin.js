@@ -3,6 +3,7 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import OrderList from '../cart/OrderList';
+import currentArch from '../state/arch';
 
 const imageStyle = {
     marginTop: "20px",
@@ -18,7 +19,7 @@ class Admin extends Component {
     }
 
     componentDidMount() {
-        axios.get(process.env.REACT_APP_BACKEND_URL + '/orders')
+        axios.get(currentArch().api + '/orders')
             .then(res => this.setState({ loaded: true, items: res.data, }))
             .catch(error => { throw(error); });
     }

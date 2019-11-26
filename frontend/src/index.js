@@ -7,12 +7,13 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import './custom.scss';
 import store from './state/store';
-// require('dotenv').config()
+import currentArch from './state/arch';
 
 window.jQuery = window.$ = require('jquery/dist/jquery.min.js');
 require('bootstrap/dist/js/bootstrap.min.js');
 
-console.log("REACT_APP_BACKEND_URL=" + process.env.REACT_APP_BACKEND_URL);
+// console.log("REACT_APP_BACKEND_URL=" + process.env.REACT_APP_BACKEND_URL);
+console.log(`Backend architecture: ${currentArch().backend}`)
 
 ReactDOM.render(
   <Provider store={store}>

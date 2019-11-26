@@ -1,4 +1,5 @@
 import axios from 'axios';
+import currentArch from './arch';
 
 const Action = {
     ADD_ITEM            : 1,
@@ -22,7 +23,7 @@ export function updateRecipes() {
     }
 
     return (dispatch) => {
-        return axios.get(process.env.REACT_APP_BACKEND_URL + '/recipes/global/')
+        return axios.get(currentArch().api + '/recipes/global/')
             .then(res => {
                 res.data.expiration = Date.now() + 1;
                 window.localStorage.setItem('recipes', JSON.stringify(res.data));
@@ -38,7 +39,7 @@ export function updateIngredients() {
     }
 
     return (dispatch) => {
-        return axios.get(process.env.REACT_APP_BACKEND_URL + '/ingredients/')
+        return axios.get(currentArch().api + '/ingredients/')
             .then(res => {
                 res.data.expiration = Date.now() + 1;
                 window.localStorage.setItem('ingredients', JSON.stringify(res.data));
@@ -55,7 +56,7 @@ export function submitCart(cart, address) {
 
     return (dispatch) => {
         cart.deliveryAddress = address;
-        return axios.post(process.env.REACT_APP_BACKEND_URL + "/cart", cart)
+        return axios.post(currentArch().api + "/cart", cart)
             .then(res => {
                 dispatch(cartSubmitted());
             })
