@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Suspense, lazy, Component } from 'react';
 import { Switch, Route } from 'react-router-dom'
 import NavBar from './general/NavBar';
 import BottomMessage from './general/BottomMessage';
@@ -11,7 +11,9 @@ import Custom from './cart/Custom';
 import Checkout from './cart/Checkout';
 import Finalized from './cart/Finalized';
 import Admin from './admin/Admin';
-import Architecture from './architecture/Architecture';
+
+import currentArch from './state/arch';
+const Architecture = React.lazy(() => import('./architecture/' + currentArch().architecturePage));
 
 class App extends Component {
 
@@ -28,7 +30,9 @@ class App extends Component {
                         <Route exact path='/cart/checkout' component={Checkout}/>
                         <Route exact path='/cart/finalized' component={Finalized}/>
                         <Route exact path='/admin' component={Admin}/>
-                        <Route exact path='/architecture' component={Architecture}/>
+                        <Suspense fallback={<div>Loading...</div>}>
+                            <Route exact path='/architecture' component={Architecture}/>
+                        </Suspense>
                     </Switch>
                     <BottomMessage />
                 </div>

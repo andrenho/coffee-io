@@ -2,14 +2,14 @@
   {
     "code": "k8s",
     "backend": "Kubernetes (on GCP)",
-    "architecturePage": "k8s_architecture",
+    "architecturePage": "K8sArchitecture",
     "frontend": "http://www.coffee-k8s.gamesmith.uk",
     "api": "http://api.coffee-k8s.gamesmith.uk"
   },
   {
     "code": "appengine",
     "backend": "Google App Engine",
-    "architecturePage": "appengine_architecture",
+    "architecturePage": "AppengineArchitecture",
     "frontend": "http://www.coffee-appengine.gamesmith.uk",
     "api": "http://api.coffee-appengine.gamesmith.uk"
   }
