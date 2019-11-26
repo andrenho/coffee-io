@@ -6,7 +6,7 @@ set -ex
 
 pushd .
 cd ../../frontend
-REACT_APP_BACKEND_URL='http://api.coffee-k8s.gamesmith.uk' yarn build
+yarn build
 popd
 
 cp -R ../../frontend/build build
