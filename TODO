@@ -8,8 +8,8 @@
 - bugs
   - date issued (ok)
   - no ingredients on view (ok)
-- process to clean up database
-- change architecture
-- make all pages redirect to "/"
+- process to clean up database (ok)
+- change architecture (ok)
+- make all pages redirect to "/" (ok)
 - TLS termination (?)
 - CI
