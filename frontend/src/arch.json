@@ -10,7 +10,7 @@
     "code": "appengine",
     "backend": "Google App Engine",
     "architecturePage": "AppengineArchitecture",
-    "frontend": "http://www.coffee-appengine.gamesmith.uk",
-    "api": "http://api.coffee-appengine.gamesmith.uk"
+    "frontend": "http://www.appengine.coffee.gamesmith.uk",
+    "api": "http://localhost:5000"
   }
 ]
