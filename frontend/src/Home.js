@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import currentArch from './state/arch';
 
 export default function Home(props) {
     return (
@@ -8,6 +9,9 @@ export default function Home(props) {
                 <h1 className="display-6 font-weight-bold mb-4">The best cup of coffee, anywhere.</h1>
                 <p className="lead font-weight-normal mb-4">
                     Customize your cup of coffee and have it delievered to your home or office, fast!
+                </p>
+                <p className="lead font-weight-normal mb-4">
+                    (Using <b>{currentArch().backend}</b> backend)
                 </p>
                 <Link className="btn btn-lg btn-primary" to="/cart">Place your order</Link>
               </div>

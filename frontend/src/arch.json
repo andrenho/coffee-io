@@ -10,7 +10,7 @@
     "code": "appengine",
     "backend": "Google App Engine",
     "architecturePage": "AppengineArchitecture",
-    "frontend": "http://www.appengine.coffee.gamesmith.uk",
-    "api": "http://localhost:5000"
+    "frontend": "https://www.appengine.coffee.gamesmith.uk",
+    "api": "https://coffee-io-k8s.appspot.com"
   }
 ]

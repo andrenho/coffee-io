@@ -1,4 +1,2 @@
-credentials.json
-.terraform
-*.tfstate
-*.tfstate.backup
+public
+.firebase

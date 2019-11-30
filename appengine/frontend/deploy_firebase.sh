@@ -1,15 +1,16 @@
 #!/bin/sh
 
-set -x
+set -xe
 
-#BUCKET=gs://www.appengine.coffee.gamesmith.uk
+rm -rf public
 
 ## compile application
-# pushd .
-# cd ../../frontend
-# yarn build
-# popd
+pushd .
+cd ../../frontend
+yarn build
+popd
 
-firebase login:ci
+cp -R ../../frontend/build public
 
-# rm -rf build
+# deploy http
+firebase deploy
