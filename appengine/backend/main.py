@@ -1,5 +1,9 @@
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify
 from flask_cors import CORS
+
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
 
 app = Flask(__name__)
 CORS(app)
@@ -40,19 +44,36 @@ my_ingredients = [
     { 'name':'Whisky',          'type':'Liquids',    'color':'#FFBF00', 'cost':12.0, 'lightColor': True },
 ]
 
+def firestore_login():
+    cred = credentials.ApplicationDefault()
+    firebase_admin.initialize_app(cred, {
+        'projectId': 'coffee-io-k8s',
+    })
+    return firestore.client()
+
+db = firestore_login()   # global
+
 @app.route('/')
 def root():
     return jsonify('hello')
 
-@app.route('/recipes/global/')
+@app.route('/recipes/global/', methods=['GET'])
 def recipes():
     return jsonify(my_recipes)
 
-@app.route('/ingredients/')
+@app.route('/ingredients/', methods=['GET'])
 def ingredients():
     return jsonify(my_ingredients)
 
+@app.route('/cart', methods=['POST'])
+def new_cart():
+    order = request.get_json()
+    db.collection(u'orders').add(order)
+    return jsonify('ok')
+
 if __name__ == '__main__':
+    for doc in db.collection(u'orders').stream():
+        print(doc.to_dict())
     app.run()
 
 # vim:st=4:sts=4:sw=4:expandtab
