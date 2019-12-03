@@ -71,9 +71,20 @@ def new_cart():
     db.collection(u'orders').add(order)
     return jsonify('ok')
 
-if __name__ == '__main__':
+@app.route('/orders', methods=['GET'])
+def orders():
+    items = []
     for doc in db.collection(u'orders').stream():
-        print(doc.to_dict())
+        items.append(doc.to_dict())
+    return jsonify(items)
+
+@app.route('/tasks/daily', methods=['GET'])
+def clear_database():
+    for doc in db.collection(u'orders').list_documents():
+        doc.delete()
+    return jsonify('ok')
+
+if __name__ == '__main__':
     app.run()
 
 # vim:st=4:sts=4:sw=4:expandtab

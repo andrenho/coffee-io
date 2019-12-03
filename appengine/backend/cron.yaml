@@ -1,0 +1,4 @@
+cron:
+  - description: 'Delete orders at midnight'
+    url: /tasks/daily
+    schedule: every 24 hours
