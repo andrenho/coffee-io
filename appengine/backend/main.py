@@ -72,6 +72,7 @@ def new_cart():
     order = request.get_json()
     order['orderDate'] = datetime.datetime.now()
     db.collection(u'orders').add(order)
+    # TODO - send e-mail
     return jsonify('ok')
 
 @app.route('/orders', methods=['GET'])
