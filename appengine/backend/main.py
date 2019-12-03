@@ -1,3 +1,5 @@
+import datetime
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
@@ -68,6 +70,7 @@ def ingredients():
 @app.route('/cart', methods=['POST'])
 def new_cart():
     order = request.get_json()
+    order['orderDate'] = datetime.datetime.now()
     db.collection(u'orders').add(order)
     return jsonify('ok')
 
